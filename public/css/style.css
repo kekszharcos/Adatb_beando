@@ -1,0 +1,10 @@
+.flex-box{
+    display: flex;
+    gap: 50pt;
+}
+footer{
+
+}
+*{
+    color: blue;
+}
