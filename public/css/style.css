@@ -5,6 +5,10 @@
 footer{
 
 }
-*{
-    color: blue;
+body{
+    background-color: darkslategray;
+}
+.error-message {
+    color: red;
+    font-weight: bold;
 }

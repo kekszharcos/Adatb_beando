@@ -19,10 +19,10 @@
     </nav>
 </header>
 <h1>Welcome on our Register page!</h1>
-<form action="/register" method="post">
-    <% if (messages.error){%>
-        <div>
-            <strong><%= messages.error %></strong>
+<form action="/register" method="post" autocomplete="on">
+    <% if (typeof uzi !== 'undefined'){%>
+        <div class="error-message">
+            <strong><%= uzi %></strong>
         </div>
     <%}%>
     <div>

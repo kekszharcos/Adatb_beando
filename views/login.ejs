@@ -21,7 +21,7 @@
 <h1>Welcome on our Login page!</h1>
 <form action="/login" method="post">
     <% if (messages.error){%>
-        <div>
+        <div class="error-message">
             <strong><%= messages.error %></strong>
         </div>
     <%}%>

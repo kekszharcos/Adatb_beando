@@ -6,6 +6,10 @@ const pool = mysql.createPool({
     user: 'tesztelo',
     password: 'tesztelo',
     database: 'helyfoglalas'
-}).promise()
+})
 
-const result =  pool.query('SELECT * FROM allomas')
+module.exports = pool
+
+
+
+
