@@ -19,6 +19,22 @@
     </nav>
 </header>
 
+<label>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for flights..">
+</label>
+<label for="busz">Bus</label><input type="checkbox" id="busz">
+<label for="vonat">Train</label><input type="checkbox" id="vonat">
+<label for="repulo">Plane</label><input type="checkbox" id="repulo">
+<%if (lista !== ""){%>
+<ul id="myUl">
+    <% lista.forEach(function (sor){
+        splitter = new Date(sor.datum).toISOString().split("T")%>
+
+    <li><a><%= sor.nev+ " | "+splitter[0]+" | "+sor.idopont+" | "+sor.tipus %></a></li>
+    <%})%>
+</ul>
+<%}%>
+
 <footer>©2023 MÉV-PÁRKÁNY. All rights reserved.</footer>
 </body>
 </html>

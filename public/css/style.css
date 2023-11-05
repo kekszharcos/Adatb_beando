@@ -1,14 +1,92 @@
+
 .flex-box{
     display: flex;
+    flex-wrap: wrap;
     gap: 50pt;
+    align-items: center;
+    border-bottom: 5pt solid black;
+    box-shadow: 10px 23px 16px 0 rgba(0,0,0,0.75);
+    position: static;
 }
+
 footer{
+    bottom: 0;
+    margin-top: 10pt;
+    position: relative;
 
 }
 body{
-    background-color: darkslategray;
+    background-image: linear-gradient(to left, turquoise,#0A4D68);
+    background-color: #0A4D68;
+    color: white;
 }
+
 .error-message {
-    color: red;
+    color: #C70039;
     font-weight: bold;
 }
+
+/* buttons */
+a{
+    color: turquoise;
+    text-decoration: none;
+    padding: 1pt;
+    font-size: 20pt;
+
+}
+nav > div > div > a:hover {
+    color: red;
+}
+#logout{
+    background-image: linear-gradient(to right,#C70039,turquoise);
+    color: white;
+    border:1pt solid black;
+    right: 6pt;
+    position: absolute;
+    width: 5%;
+
+}
+
+button:not(#logout){
+    background-image: linear-gradient(to right,#0A4D68,black);
+    color: white;
+    border:1pt solid black;
+    padding-left: 5pt;
+    padding-right: 5pt;
+    padding-bottom: 2pt;
+    margin-bottom: 5pt;
+}
+/*from w3 schools*/
+#myInput {
+    background-color: black;
+    color: white;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin: 20pt 6pt 12px 0;
+}
+
+#myUl {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 20%;
+}
+
+#myUl li a {
+    border: 1px solid #ddd;
+    margin-top: -1px;
+    background-color: #f6f6f6;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    display: block;
+}
+
+#myUl li a:hover:not(.header) {
+    background-color: darkgray;
+}
+
+

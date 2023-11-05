@@ -14,13 +14,33 @@
         <div class="flex-box">
             <div><a href="/userprof">User Things</a></div>
         </div>
+        <div>
+            <form action="/logout?_method=DELETE" method="post">
+                <button type="submit" aria-current="page" id="logout">LogOut</button>
+            </form>
+        </div>
 
     </nav>
 </header>
-<form action="/logout?_method=DELETE" method="post">
-    <button type="submit" aria-current="page">LogOut</button>
-</form>
+
 <h1>Welcome <%= nev %>!</h1>
+<%if (szerep === "admin"){%>
+    <form action="/admin" method="post">
+        <button type="submit" aria-current="page">AdminThingos</button>
+    </form>
+<%}%>
+<%
+
+if (lista !== ""){%>
+    <ul>
+    <% lista.forEach(function (sor){
+        splitter = new Date(sor.datum).toISOString().split("T")%>
+
+    <li><%= sor.nev+ " | "+splitter[0]+" | "+sor.idopont+" | "+sor.tipus %></li>
+    <%})%>
+    </ul>
+        <%}%>
+p>lorem
 
 <footer>©2023 MÉV-PÁRKÁNY. All rights reserved.</footer>
 </body>
