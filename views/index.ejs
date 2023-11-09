@@ -11,28 +11,51 @@
 <body>
 <header id="header">
     <nav>
-        <div class="flex-box">
-            <div><a href="/">Main</a></div>
-            <div><a href="/login">Login</a></div>
-            <div><a href="/register">Register</a></div>
-        </div>
+        <a href="/">Main</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
     </nav>
 </header>
+<div class="listing-wrapper">
+    <form action="/listing" method="post">
+        <label>
+            <input type="text" id="myInput" name="myInput" placeholder="Where do you want to go?">
+        </label>
+        <label for="busz">Bus</label><input type="checkbox" id="busz" name="busz">
+        <label for="vonat">Train</label><input type="checkbox" id="vonat" name="vonat">
+        <label for="repulo">Plane</label><input type="checkbox" id="repulo" name="repulo">
+        <button type="submit">Click to Search or press enter</button>
+    </form>
+</div>
 
-<label>
-    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for flights..">
-</label>
-<label for="busz">Bus</label><input type="checkbox" id="busz">
-<label for="vonat">Train</label><input type="checkbox" id="vonat">
-<label for="repulo">Plane</label><input type="checkbox" id="repulo">
 <%if (lista !== ""){%>
-<ul id="myUl">
-    <% lista.forEach(function (sor){
+<div class="table-wrapper">
+    <table id="flightList">
+        <thead>
+        <tr>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Vehicle</th>
+        </tr>
+        </thead>
+        <tbody>
+    <% lista.forEach(sor=>{
         splitter = new Date(sor.datum).toISOString().split("T")%>
 
-    <li><a><%= sor.nev+ " | "+splitter[0]+" | "+sor.idopont+" | "+sor.tipus %></a></li>
+    <tr>
+        <td><%= sor.honnan %></td>
+        <td><%= sor.hova %></td>
+        <td><%= splitter[0] %></td>
+        <td><%= sor.idopont %></td>
+        <td><%= sor.tipus %></td>
+    </tr>
+
     <%})%>
-</ul>
+        </tbody>
+    </table>
+</div>
 <%}%>
 
 <footer>©2023 MÉV-PÁRKÁNY. All rights reserved.</footer>

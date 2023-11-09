@@ -1,0 +1,2 @@
+//honna-hova
+//SELECT celallomas.nev as Honnan,induloallomas.nev as Hova FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon;

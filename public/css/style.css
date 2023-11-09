@@ -1,18 +1,31 @@
 
-.flex-box{
+nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 50pt;
+    gap: 10pt;
     align-items: center;
     border-bottom: 5pt solid black;
     box-shadow: 10px 23px 16px 0 rgba(0,0,0,0.75);
-    position: static;
+}
+
+nav a {
+    flex: 1;
+    padding: 5pt;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.5s ease-out;
+    font-weight: bold;
+}
+nav a:hover,
+nav a:focus {
+    background-color: black;
+    color: #333;
 }
 
 footer{
     bottom: 0;
     margin-top: 10pt;
     position: relative;
+    text-align: center;
 
 }
 body{
@@ -22,7 +35,11 @@ body{
 }
 
 .error-message {
-    color: #C70039;
+    color: orangered;
+    font-weight: bold;
+}
+.success-message {
+    color: greenyellow;
     font-weight: bold;
 }
 
@@ -32,10 +49,10 @@ a{
     text-decoration: none;
     padding: 1pt;
     font-size: 20pt;
-
 }
-nav > div > div > a:hover {
+nav a:hover {
     color: red;
+    transition: 10s right;
 }
 #logout{
     background-image: linear-gradient(to right,#C70039,turquoise);
@@ -56,7 +73,7 @@ button:not(#logout){
     padding-bottom: 2pt;
     margin-bottom: 5pt;
 }
-/*from w3 schools*/
+
 #myInput {
     background-color: black;
     color: white;
@@ -66,27 +83,59 @@ button:not(#logout){
     margin: 20pt 6pt 12px 0;
 }
 
-#myUl {
-    /* Remove default list styling */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 20%;
+.table-wrapper{
+    margin: 10px 70px 70px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+}
+.listing-wrapper{
+    margin: 10px 70px 70px;
+    text-align: center;
 }
 
-#myUl li a {
-    border: 1px solid #ddd;
-    margin-top: -1px;
-    background-color: #f6f6f6;
-    padding: 12px;
-    text-decoration: none;
-    font-size: 18px;
-    color: black;
-    display: block;
+#flightList {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+
 }
 
-#myUl li a:hover:not(.header) {
-    background-color: darkgray;
+#flightList td, #flightList th {
+    text-align: center;
+    padding: 8px;
+
 }
+
+#flightList td {
+    border-right: 1px solid #f8f8f8;
+    font-size: 12pt;
+}
+/*Licorice #1A1110*/
+#flightList thead th {
+    color: #ffffff;
+    background: black;
+    font-weight: bold;
+    font-size: 15pt;
+}
+
+#flightList tr:nth-child(even) {
+    background: #36454F;
+}
+#flightList tr:nth-child(odd) {
+    background: #2C3539;
+}
+input{
+    margin-top: 5pt;
+    margin-bottom: 5pt;
+}
+h1,h2,label,form{
+    text-align: center;
+}
+
+
 
 

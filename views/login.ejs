@@ -11,11 +11,9 @@
 <body>
 <header id="header">
     <nav>
-        <div class="flex-box">
-            <div><a href="/">Main</a></div>
-            <div><a href="/login">Login</a></div>
-            <div><a href="/register">Register</a></div>
-        </div>
+        <a href="/">Main</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
     </nav>
 </header>
 <h1>Welcome on our Login page!</h1>
@@ -25,10 +23,15 @@
             <strong><%= messages.error %></strong>
         </div>
     <%}%>
-    <label for="email">E-mail:</label>
-    <input type="email" name="email" id="email">
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password">
+        <% if (success){%>
+            <div class="success-message">
+                <strong><%= success %></strong>
+            </div>
+        <%}%>
+    <label for="email">E-mail:</label><br>
+    <input type="email" name="email" id="email" required><br>
+    <label for="password">Password:</label><br>
+    <input type="password" name="password" id="password" required><br>
     <button>Login</button>
 </form>
 <h2>Don't have an account yet? <a href="/register">Click here</a></h2>
