@@ -98,6 +98,7 @@ app.post("/listing", (req, res) => {
 });
 
 //Útvonal
+
 app.get("/", (req, res)=>{
     res.render("index.ejs",{lista:listas})
 })
@@ -119,7 +120,7 @@ app.get("/admin", auth.checkAuthenticated,auth.checkAdminPermission ,(req,res)=>
 app.delete("/logout", (req,res)=>{
     req.logOut(req.user, err=>{
         if (err) return next(err)
-        res.redirect("/login")
+        res.render("login",{error:"You logged out!",success:""})
     })
 
 

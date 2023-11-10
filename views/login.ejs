@@ -9,13 +9,7 @@
     <title>MÉV</title>
 </head>
 <body>
-<header id="header">
-    <nav>
-        <a href="/">Main</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </nav>
-</header>
+<%- include('header') %>
 <h1>Welcome on our Login page!</h1>
 <form action="/login" method="post">
     <% if (messages.error){%>
@@ -36,6 +30,6 @@
 </form>
 <h2>Don't have an account yet? <a href="/register">Click here</a></h2>
 
-<footer>©2023 MÉV-PÁRKÁNY. All rights reserved.</footer>
+<%- include('footer') %>
 </body>
 </html>

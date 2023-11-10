@@ -9,13 +9,7 @@
     <title>MÉV</title>
 </head>
 <body>
-<header id="header">
-    <nav>
-        <a href="/">Main</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </nav>
-</header>
+<%- include('header') %>
 <h1>Welcome on our Register page!</h1>
 <form action="/register" method="post" autocomplete="on">
     <% if (typeof uzi !== 'undefined'){%>
@@ -43,6 +37,6 @@
 </form>
 
 
-<footer>©2023 MÉV-PÁRKÁNY. All rights reserved.</footer>
+<%- include('footer') %>
 </body>
 </html>
