@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="sources/favico.ico" type="image/x-icon">
+    <title>MÉV</title>
+</head>
+<body>
+<header id="header">
+    <nav>
+        <a href="/userprof">User Things</a>
+        <a href="/tickets">Tickets</a>
+        <a href="/flightList">Flights</a>
+        <%if (szerep === "admin"){%>
+            <a href="/users">Users</a>
+        <%}%>
+        <form action="/logout?_method=DELETE" method="post">
+            <button type="submit" aria-current="page" id="logout">LogOut</button>
+        </form>
+    </nav>
+</header>
+<%if (typeof uzi !== "undefined"){%>
+    <div class="success-message">
+        <%= uzi%>
+    </div>
+<%}%>
+<% if (lista.length > 0){%>
+<h2>Your tickets: </h2>
+<div class="table-wrapper">
+    <table id="List">
+        <thead>
+        <tr>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Vehicle</th>
+            <th>Number of tickets</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            let kek
+
+        lista.forEach(sor=>{
+            kek= sor.ar
+            jaratazon = sor.jaratazonosito
+            jegyazon = sor.jegyazon
+            splitter = new Date(sor.datum).toISOString().split("T")%>
+
+        <tr>
+            <td><%= sor.honnan %></td>
+            <td><%= sor.hova %></td>
+            <td><%= splitter[0] %></td>
+            <td><%= sor.idopont %></td>
+            <td><%= sor.tipus %></td>
+            <td><%= sor.db %></td>
+        </tr>
+        <%})%>
+        </tbody>
+    </table>
+</div>
+<%}else {%>
+    <div class="error-message"> You don't have any tickets</div>
+<%}%>
+<%- include('footer') %>
+</body>
+</html>

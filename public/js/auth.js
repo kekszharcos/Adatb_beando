@@ -41,7 +41,7 @@ function checkNotAuthenticated(req,res,next){
 }
 
 function checkAdminPermission(req,res,next){
-    if(req !== "admin"){
+    if(req.user.szerep !== "admin"){
         return res.redirect("/userprof")
     }
     next()

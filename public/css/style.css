@@ -1,4 +1,6 @@
-
+*{
+    font-family: Arial, serif;
+}
 nav {
     display: flex;
     gap: 10pt;
@@ -12,8 +14,10 @@ nav a {
     padding: 5pt;
     text-align: center;
     text-decoration: none;
-    transition: all 0.5s ease-out;
+    -webkit-text-stroke: 0.5pt #0A4D68;
     font-weight: bold;
+    transition: all 0.5s ease-out;
+
 }
 
 
@@ -50,9 +54,7 @@ nav a:hover {
     color: red;
     transition: 10s right;
 }
-nav a:focus{
-    color: red;
-}
+
 #logout{
     background-image: linear-gradient(to right,#C70039,turquoise);
     color: white;
@@ -72,7 +74,7 @@ button:not(#logout){
     margin-bottom: 5pt;
 }
 
-#myInput {
+.myInput {
     background-color: black;
     color: white;
     font-size: 16px;
@@ -81,16 +83,18 @@ button:not(#logout){
     margin: 20pt 6pt 12px 0;
 }
 
-.table-wrapper{
-    margin: 10px 70px 70px;
-    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
-}
 .listing-wrapper{
     margin: 10px 70px 70px;
     text-align: center;
 }
 
-#flightList {
+.table-wrapper{
+    margin: 10px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+}
+
+#List {
+    margin-top: 30pt;
     border-radius: 5px;
     font-size: 12px;
     font-weight: normal;
@@ -102,28 +106,28 @@ button:not(#logout){
 
 }
 
-#flightList td, #flightList th {
+#List td, #List th {
     text-align: center;
-    padding: 8px;
-
+    padding: 8pt;
+    width: fit-content;
 }
 
-#flightList td {
+#List td {
     border-right: 1px solid #f8f8f8;
     font-size: 12pt;
 }
 /*Licorice #1A1110*/
-#flightList thead th {
+#List thead th {
     color: #ffffff;
     background: black;
     font-weight: bold;
-    font-size: 15pt;
+    font-size: 13pt;
 }
 
-#flightList tr:nth-child(even) {
+#List tr:nth-child(even) {
     background: #36454F;
 }
-#flightList tr:nth-child(odd) {
+#List tr:nth-child(odd) {
     background: #2C3539;
 }
 input{
@@ -133,10 +137,7 @@ input{
 h1,h2,label,form{
     text-align: center;
 }
-iframe{
-    border: none;
-    width: 100%;
-}
+
 
 
 

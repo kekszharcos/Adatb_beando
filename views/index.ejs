@@ -11,20 +11,23 @@
 <body>
 <%- include('header') %>
 <div class="listing-wrapper">
-    <form action="/listing" method="post">
+    <form action="/listing" method="post" class="middle">
         <label>
-            <input type="text" id="myInput" name="myInput" placeholder="Where do you want to go?">
+            <input type="text" class="myInput" name="from" placeholder="From">
         </label>
-        <label for="busz">Bus</label><input type="checkbox" id="busz" name="busz">
-        <label for="vonat">Train</label><input type="checkbox" id="vonat" name="vonat">
-        <label for="repulo">Plane</label><input type="checkbox" id="repulo" name="repulo">
+        <label>
+            <input type="text" class="myInput" name="to" placeholder="To">
+        </label>
+        <label for="bus">Bus</label><input type="checkbox" id="bus" name="bus">
+        <label for="train">Train</label><input type="checkbox" id="train" name="train">
+        <label for="airplane">Plane</label><input type="checkbox" id="airplane" name="airplane">
         <button type="submit">Click to Search or press enter</button>
     </form>
 </div>
 
-<%if (lista !== ""){%>
+
 <div class="table-wrapper">
-    <table id="flightList">
+    <table id="List">
         <thead>
         <tr>
             <th>Source</th>
@@ -32,6 +35,8 @@
             <th>Date</th>
             <th>Time</th>
             <th>Vehicle</th>
+            <th>Avaliable tickets</th>
+            <th>Price</th>
         </tr>
         </thead>
         <tbody>
@@ -44,13 +49,15 @@
         <td><%= splitter[0] %></td>
         <td><%= sor.idopont %></td>
         <td><%= sor.tipus %></td>
+        <td><%= sor.elerheto_db %></td>
+        <td><%= sor.ar %>FT/db</td>
     </tr>
 
     <%})%>
         </tbody>
     </table>
 </div>
-<%}%>
+
 
 <%- include('footer') %>
 </body>

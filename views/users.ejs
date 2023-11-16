@@ -17,27 +17,33 @@
         <%if (szerep === "admin"){%>
             <a href="/users">Users</a>
         <%}%>
-
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>
         </form>
     </nav>
 </header>
+<div class="table-wrapper">
+    <table id="List">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% lista.forEach(sor=>{
 
-<h1>Welcome <%= nev %>!</h1>
+        %>
 
-<%
-if (lista !== ""){%>
-    <ul>
-    <% lista.forEach(function (sor){
-        splitter = new Date(sor.datum).toISOString().split("T")%>
+        <tr>
+            <td><%= sor.nev %></td>
+            <td><%= sor.email %></td>
+        </tr>
 
-    <li><%= sor.nev+ " | "+splitter[0]+" | "+sor.idopont+" | "+sor.tipus %></li>
-    <%})%>
-    </ul>
-        <%}%>
-p>lorem
-
+        <%})%>
+        </tbody>
+    </table>
+</div>
 <%- include('footer') %>
 </body>
 </html>

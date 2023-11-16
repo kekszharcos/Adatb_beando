@@ -14,8 +14,8 @@ const method_override = require("method-override")
 const validator = require("email-validator");
 const auth = require('./public/js/auth');
 const users = require('./public/js/users');
-const basething = require('./public/js/basethingos')
-const {listing} = require("./public/js/basethingos");
+const querys = require("./public/js/basethingos");
+const {userList} = require("./public/js/basethingos");
 
 // Egyéb modulok importálása...
 
@@ -87,20 +87,57 @@ app.post("/register",auth.checkNotAuthenticated ,async (req,res,done)=>{
 let listas = []
 
 
-app.post("/admin",  (req, res) => {
+app.post("/admin",auth.checkAuthenticated,  (req, res) => {
     res.render("userprof.ejs", { nev: req.user.nev + " you are in admin mode", szerep: req.user.szerep, lista: listas });
 });
 
-app.post("/listing", (req, res) => {
-    listing(req.body.myInput,req.body.busz,req.body.vonat,req.body.repulo).then(rows =>res.render("index",{lista:rows}))
-        .then(r => console.log(req.body))
+app.post("/listing",auth.checkNotAuthenticated, (req, res) => {
+    querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>res.render("index",{lista:rows}))
+
 
 });
 
+app.post("/flightlisting", auth.checkAuthenticated, (req,res)=>{
+    querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
+        res.render("loggedInListing.ejs",{lista:rows,szerep:req.user.szerep,ticketbuyview:"no"})
+    })
+
+})
+
+app.post("/ticketBuy:id",auth.checkAuthenticated,(req,res)=>{
+
+    querys.jaratGet(req.params.id).then(rows=>{
+        let vetelszam
+        if (req.body.number > rows[0].elerheto_db){
+            vetelszam = rows[0].elerheto_db
+        }else {
+            vetelszam = req.body.number
+        }
+        res.render("loggedInListing",{szerep:req.user.szerep, ticketbuyview:"yes", rows, szam: vetelszam})
+    })
+
+})
+app.post("/boughtATicket:jaratjegy",auth.checkAuthenticated,(req,res)=>{
+    let splitter = req.params.jaratjegy.split("To")
+
+    querys.addTicket(splitter[1],req.user.id,splitter[2]).then(r=>{
+        querys.tickets(req.user.id).then(rows=>res.render("mytickets.ejs",{uzi:"You just bought a ticket!", szerep: req.user.szerep, lista: rows}))
+    })
+})
+
+app.post("/users",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+
+})
+
 //Útvonal
 
-app.get("/", (req, res)=>{
-    res.render("index.ejs",{lista:listas})
+app.get("/",auth.checkNotAuthenticated, (req, res)=>{
+    if (req.isAuthenticated){
+        res.render("index.ejs",{lista:listas,authenticated:"y"})
+    }else{
+        res.render("index.ejs",{lista:listas})
+    }
+
 })
 app.get("/login", auth.checkNotAuthenticated,(req,res)=>{
     res.render("login.ejs",{success:""})
@@ -114,13 +151,24 @@ app.get("/userprof", auth.checkAuthenticated ,(req,res)=>{
 app.get("/admin", auth.checkAuthenticated,auth.checkAdminPermission ,(req,res)=>{
     res.render("userprof.ejs",{nev: req.user.nev, szerep: req.user.szerep, lista: listas})
 })
+app.get("/tickets", auth.checkAuthenticated ,(req,res)=>{
+    querys.tickets(req.user.id).then(rows=>res.render("mytickets.ejs",{ szerep: req.user.szerep, lista: rows}))
+})
+app.get("/flightList", auth.checkAuthenticated ,(req,res)=>{
+    res.render("loggedInListing",{nev: req.user.nev +", you logged in", szerep: req.user.szerep, lista: [],ticketbuyview:"no"})
+})
+app.get("/users", auth.checkAuthenticated, auth.checkAdminPermission ,(req,res)=>{
+    userList().then(rows=>{
+        res.render("users.ejs",{szerep: req.user.szerep, lista: rows})
+    })
+})
 
 //utvonalak vege
 
 app.delete("/logout", (req,res)=>{
     req.logOut(req.user, err=>{
         if (err) return next(err)
-        res.render("login",{error:"You logged out!",success:""})
+        res.render("login",{success:"You logged out!"})
     })
 
 
