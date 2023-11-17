@@ -16,6 +16,7 @@
         <a href="/flightList">Flights</a>
         <%if (szerep === "admin"){%>
             <a href="/users">Users</a>
+            <a href="/flightModerate">Moderate Flights</a>
         <%}%>
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>
@@ -28,7 +29,11 @@
     </div>
 <%}%>
 <% if (lista.length > 0){%>
-<h2>Your tickets: </h2>
+    <%if (typeof otherUserView === 'undefined'){%>
+    <h2>Your tickets: </h2>
+    <%}else{%>
+        <h2 class="error-message"><%= guy%>'s tickets: </h2>
+        <%}%>
 <div class="table-wrapper">
     <table id="List">
         <thead>
@@ -39,18 +44,15 @@
             <th>Time</th>
             <th>Vehicle</th>
             <th>Number of tickets</th>
+            <%if (typeof otherUserView !== 'undefined'){%>
+                <th>Button for removal</th>
+            <%}%>
         </tr>
         </thead>
         <tbody>
         <%
-            let kek
-
         lista.forEach(sor=>{
-            kek= sor.ar
-            jaratazon = sor.jaratazonosito
-            jegyazon = sor.jegyazon
             splitter = new Date(sor.datum).toISOString().split("T")%>
-
         <tr>
             <td><%= sor.honnan %></td>
             <td><%= sor.hova %></td>
@@ -58,13 +60,25 @@
             <td><%= sor.idopont %></td>
             <td><%= sor.tipus %></td>
             <td><%= sor.db %></td>
+            <%if (typeof otherUserView !== 'undefined'){%>
+                <th>
+                    <form action="/removeTicket<%= sor.azonosito %>T<%= guy%>T<%= sor.jegyazonosito%>T<%= sor.db%>" method="post">
+                        <button type="submit">Remove ticket</button>
+                    </form>
+                </th>
+            <%}%>
         </tr>
         <%})%>
         </tbody>
     </table>
 </div>
 <%}else {%>
+<%if (typeof otherUserView !== 'undefined'){%>
+    <div class="error-message"> This user possesses no tickets</div>
+<%}else{%>
     <div class="error-message"> You don't have any tickets</div>
+<%}%>
+
 <%}%>
 <%- include('footer') %>
 </body>

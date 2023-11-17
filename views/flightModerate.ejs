@@ -12,11 +12,82 @@
 <header id="header">
     <nav>
         <a href="/userprof">User Things</a>
+        <a href="/tickets">Tickets</a>
+        <a href="/flightList">Flights</a>
+        <%if (szerep === "admin"){%>
+            <a href="/users">Users</a>
+            <a href="/flightModerate">Moderate Flights</a>
+        <%}%>
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>
         </form>
     </nav>
 </header>
+<%if (typeof uzi !== "undefined"){%>
+    <div class="success-message">
+        <%= uzi%>
+    </div>
+<%}%>
+<h2>Add flight </h2>
+<form action="/addFlight" method="post">
+    <label for="source">Source station:
+        <select name="source" required>
+            <option value="">Choose station</option>
+            <%lista.forEach(function (sor){%>
+                <option value="<%= sor.azonosito%>"><%= sor.nev%></option>
+            <%})%>
+        </select>
+    </label>
+    <label for="destination">Destination station:
+        <select name="destination" required>
+            <option value="">Choose station</option>
+            <%lista.forEach(function (sor){%>
+                <option value="<%= sor.azonosito%>"><%= sor.nev%></option>
+            <%})%>
+        </select>
+    </label>
+    <label for="datum">Date:
+        <input type="date" name="datum">
+    </label>
+    <label for="idopont">Time:
+        <input type="time" name="idopont">
+    </label>
+    <label for="tipus">Vehicle type:
+        <select name="tipus" required>
+            <option value="">Choose vehicle type</option>
+            <option value="bus">bus</option>
+            <option value="train">train</option>
+            <option value="airplane">airplane</option>
+        </select>
+    </label>
+    <button type="submit">Add flight</button>
+</form>
+<h2>Add station</h2>
+<form action="/addStation" method="post">
+    <label for="nev">Name of the station:
+        <input type="text" name="nev" required></label>
+    <label for="varos">City of the station:
+        <input type="text" name="varos" required></label>
+    <button type="submit">Add station</button>
+</form>
+<h2>Add ticket</h2>
+<form action="/addTicket" method="post">
+    <label for="ar">Price of the ticket:
+        <input type="number" name="ar" ></label>
+    <label for="jaratazon">Flight of the ticket:
+        <select name="jaratazon" required>
+            <option value="">Choose flight</option>
+            <%flightLista.forEach(function (sor){
+                splitter = new Date(sor.datum).toISOString().split("T")%>
+            %>
+                <option value="<%= sor.azonosito%>"><%= sor.honnan%>-><%= sor.hova%>:<%= splitter[0]%>|<%= sor.idopont%>|<%= sor.tipus%></option>
+            <%})%>
+        </select>
+    </label>
+    <label for="elerheto">Number of tickets:
+        <input type="number" name="elerheto" min="0" max="10000" required></label>
+    <button type="submit">Add ticket</button>
+</form>
 <%- include('footer') %>
 </body>
 </html>

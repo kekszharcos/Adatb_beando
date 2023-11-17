@@ -15,7 +15,7 @@ const validator = require("email-validator");
 const auth = require('./public/js/auth');
 const users = require('./public/js/users');
 const querys = require("./public/js/basethingos");
-const {userList} = require("./public/js/basethingos");
+const {userList, ticketsOf} = require("./public/js/basethingos");
 
 // Egyéb modulok importálása...
 
@@ -86,15 +86,8 @@ app.post("/register",auth.checkNotAuthenticated ,async (req,res,done)=>{
 
 let listas = []
 
-
-app.post("/admin",auth.checkAuthenticated,  (req, res) => {
-    res.render("userprof.ejs", { nev: req.user.nev + " you are in admin mode", szerep: req.user.szerep, lista: listas });
-});
-
 app.post("/listing",auth.checkNotAuthenticated, (req, res) => {
     querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>res.render("index",{lista:rows}))
-
-
 });
 
 app.post("/flightlisting", auth.checkAuthenticated, (req,res)=>{
@@ -120,14 +113,58 @@ app.post("/ticketBuy:id",auth.checkAuthenticated,(req,res)=>{
 app.post("/boughtATicket:jaratjegy",auth.checkAuthenticated,(req,res)=>{
     let splitter = req.params.jaratjegy.split("To")
 
-    querys.addTicket(splitter[1],req.user.id,splitter[2]).then(r=>{
+    querys.addUserTicket(splitter[1],req.user.id,splitter[2]).then(r=>{
         querys.tickets(req.user.id).then(rows=>res.render("mytickets.ejs",{uzi:"You just bought a ticket!", szerep: req.user.szerep, lista: rows}))
     })
 })
 
-app.post("/users",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
-
+app.post("/ticketsOf:nev",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+    querys.otherTicketList(req.params.nev).then(rows => res.render("mytickets.ejs",{szerep: req.user.szerep, otherUserView: "on", guy: req.params.nev, lista: rows}))
 })
+app.post("/removeTicket:azonosito",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+    splitter = req.params.azonosito.split("T")
+    let azonosito = splitter[0]
+    let nev = splitter[1]
+    let jegyazonosito = splitter[2]
+    let darab = splitter[3]
+
+    querys.removeUserTicket(azonosito,darab,jegyazonosito).then(rows =>  querys.otherTicketList(nev).then(rows => res.render("mytickets.ejs",{szerep: req.user.szerep, otherUserView: "on", guy: nev, lista: rows})))
+})
+app.post("/addFlight",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+    let datum = req.body.datum.split("-")
+    let jodatum
+    if (parseInt(datum[0]) > 9999){
+        jodatum = "9999"
+    }else if (datum[0] === "0000"){
+        jodatum = "0001"
+    }
+    jodatum+="-"+datum[1]+"-"+datum[2]
+    if (req.body.datum === ''){
+        jodatum = "0001-01-01"
+    }
+
+
+    querys.addFlight(jodatum,req.body.idopont,req.body.tipus,req.body.source,req.body.destination).then(rows =>{
+        querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows,flightLista:sork, uzi:"Flight added succsessfully!"})))
+    })
+})
+
+app.post("/addStation",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+    querys.addStation(req.body.nev,req.body.varos).then(rows =>{
+        querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows,flightLista:sork, uzi:"Station added succsessfully!"})))
+    })
+})
+app.post("/addTicket",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+    querys.addTicket(req.body.ar,req.body.jaratazon,req.body.elerheto).then(rows =>{
+        querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows, flightLista:sork, uzi:"Ticket added succsessfully!"})))
+    })
+})
+app.post("/removeFlight:azonosito",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+    querys.removeFlight(req.params.azonosito).then(rows=>querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
+        res.render("loggedInListing.ejs",{lista:rows,szerep:req.user.szerep,ticketbuyview:"no"})
+    }))
+})
+
 
 //Útvonal
 
@@ -161,6 +198,9 @@ app.get("/users", auth.checkAuthenticated, auth.checkAdminPermission ,(req,res)=
     userList().then(rows=>{
         res.render("users.ejs",{szerep: req.user.szerep, lista: rows})
     })
+})
+app.get("/flightModerate", auth.checkAuthenticated, auth.checkAdminPermission ,(req,res)=>{
+   querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows,flightLista:sork})))
 })
 
 //utvonalak vege

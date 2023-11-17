@@ -16,6 +16,7 @@
         <a href="/flightList">Flights</a>
         <%if (szerep === "admin"){%>
             <a href="/users">Users</a>
+            <a href="/flightModerate">Moderate Flights</a>
         <%}%>
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>
@@ -50,6 +51,9 @@
                 <th>Avaliable tickets</th>
                 <th>Price</th>
                 <th>Buy?</th>
+                <%if (szerep === "admin"){%>
+                    <th>Button for removal</th>
+                <%}%>
             </tr>
             </thead>
             <tbody>
@@ -74,6 +78,13 @@
                     </td>
                 <%}else {%>
                     <td class="error-message">Out of tickets</td>
+                <%}%>
+                <%if (szerep === "admin"){%>
+                    <td>
+                        <form action="/removeFlight<%= sor.azonosito %>" method="post">
+                            <button type="submit">Remove flight</button>
+                        </form>
+                    </td>
                 <%}%>
             </tr>
 

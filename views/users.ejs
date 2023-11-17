@@ -16,6 +16,7 @@
         <a href="/flightList">Flights</a>
         <%if (szerep === "admin"){%>
             <a href="/users">Users</a>
+            <a href="/flightModerate">Moderate Flights</a>
         <%}%>
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>
@@ -28,6 +29,7 @@
         <tr>
             <th>Username</th>
             <th>Email</th>
+            <th>User tickets</th>
         </tr>
         </thead>
         <tbody>
@@ -38,6 +40,11 @@
         <tr>
             <td><%= sor.nev %></td>
             <td><%= sor.email %></td>
+            <td>
+                <form action="/ticketsOf<%= sor.nev%>" method="post">
+                <button type="submit">Ticket view</button>
+                </form>
+            </td>
         </tr>
 
         <%})%>
