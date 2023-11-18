@@ -26,18 +26,8 @@
 </header>
 
 <h1>Welcome <%= nev %>!</h1>
+<h2>Your email is: <%= email%></h2>
 
-<%
-if (lista !== ""){%>
-    <ul>
-    <% lista.forEach(function (sor){
-        splitter = new Date(sor.datum).toISOString().split("T")%>
-
-    <li><%= sor.nev+ " | "+splitter[0]+" | "+sor.idopont+" | "+sor.tipus %></li>
-    <%})%>
-    </ul>
-        <%}%>
-p>lorem
 
 <%- include('footer') %>
 </body>

@@ -50,10 +50,7 @@
                 <th>Vehicle</th>
                 <th>Avaliable tickets</th>
                 <th>Price</th>
-                <th>Buy?</th>
-                <%if (szerep === "admin"){%>
-                    <th>Button for removal</th>
-                <%}%>
+                <th>Buy</th>
             </tr>
             </thead>
             <tbody>
@@ -70,7 +67,7 @@
                 <td><%= sor.ar %>FT/db</td>
                 <%if(sor.elerheto_db > 0){%>
                     <td>
-                        <form method="post" action="/ticketBuy<%= sor.jaratazonosito %>">
+                        <form method="post" action="/ticketBuy<%= sor.jaratazonosito %>Am<%= sor.jegyazon%>">
                             <label for="number">How many?</label>
                             <input type="number" name="number" id="number" min="1" max="<%= sor.elerheto_db %>" value="1">
                             <button type="submit">Buy Ticket</button>
@@ -78,13 +75,6 @@
                     </td>
                 <%}else {%>
                     <td class="error-message">Out of tickets</td>
-                <%}%>
-                <%if (szerep === "admin"){%>
-                    <td>
-                        <form action="/removeFlight<%= sor.azonosito %>" method="post">
-                            <button type="submit">Remove flight</button>
-                        </form>
-                    </td>
                 <%}%>
             </tr>
 

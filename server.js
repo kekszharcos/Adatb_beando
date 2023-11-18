@@ -98,8 +98,8 @@ app.post("/flightlisting", auth.checkAuthenticated, (req,res)=>{
 })
 
 app.post("/ticketBuy:id",auth.checkAuthenticated,(req,res)=>{
-
-    querys.jaratGet(req.params.id).then(rows=>{
+    splitter = req.params.id.split('Am')
+    querys.jaratTicketGet(splitter[0],splitter[1]).then(rows=>{
         let vetelszam
         if (req.body.number > rows[0].elerheto_db){
             vetelszam = rows[0].elerheto_db
@@ -112,57 +112,57 @@ app.post("/ticketBuy:id",auth.checkAuthenticated,(req,res)=>{
 })
 app.post("/boughtATicket:jaratjegy",auth.checkAuthenticated,(req,res)=>{
     let splitter = req.params.jaratjegy.split("To")
-
     querys.addUserTicket(splitter[1],req.user.id,splitter[2]).then(r=>{
-        querys.tickets(req.user.id).then(rows=>res.render("mytickets.ejs",{uzi:"You just bought a ticket!", szerep: req.user.szerep, lista: rows}))
+        querys.ticketsOfUser(req.user.id).then(rows=>res.render("mytickets.ejs",{uzi:"You just bought a ticket!", szerep: req.user.szerep, lista: rows}))
     })
 })
 
-app.post("/ticketsOf:nev",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+app.post("/ticketsOf:nev", auth.checkAuthenticated, auth.checkAdminPermission,(req,res)=>{
     querys.otherTicketList(req.params.nev).then(rows => res.render("mytickets.ejs",{szerep: req.user.szerep, otherUserView: "on", guy: req.params.nev, lista: rows}))
 })
-app.post("/removeTicket:azonosito",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+app.post("/removeTicket:azonosito", auth.checkAuthenticated, auth.checkAdminPermission,(req,res)=>{
     splitter = req.params.azonosito.split("T")
     let azonosito = splitter[0]
     let nev = splitter[1]
     let jegyazonosito = splitter[2]
     let darab = splitter[3]
 
-    querys.removeUserTicket(azonosito,darab,jegyazonosito).then(rows =>  querys.otherTicketList(nev).then(rows => res.render("mytickets.ejs",{szerep: req.user.szerep, otherUserView: "on", guy: nev, lista: rows})))
+    querys.removeUserTicket(azonosito,darab,jegyazonosito).then(rows =>  querys.otherTicketList(nev).then(rows => res.render("mytickets.ejs",{szerep: req.user.szerep, otherUserView: "on", guy: nev, lista: rows, uzi:"Ticket removed successfully!"})))
 })
-app.post("/addFlight",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+app.post("/addFlight", auth.checkAuthenticated, auth.checkAdminPermission,(req,res)=>{
     let datum = req.body.datum.split("-")
     let jodatum
-    if (parseInt(datum[0]) > 9999){
-        jodatum = "9999"
-    }else if (datum[0] === "0000"){
-        jodatum = "0001"
-    }
-    jodatum+="-"+datum[1]+"-"+datum[2]
     if (req.body.datum === ''){
         jodatum = "0001-01-01"
+    }else if (parseInt(datum[0]) > 9999){
+        jodatum = "9999"
+        jodatum+="-"+datum[1]+"-"+datum[2]
+    }else if (parseInt(datum[0]) < 2023){
+        jodatum = "2023"
+        jodatum+="-"+datum[1]+"-"+datum[2]
+    }else {
+        jodatum = req.body.datum
     }
-
 
     querys.addFlight(jodatum,req.body.idopont,req.body.tipus,req.body.source,req.body.destination).then(rows =>{
         querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows,flightLista:sork, uzi:"Flight added succsessfully!"})))
     })
 })
 
-app.post("/addStation",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+app.post("/addStation", auth.checkAuthenticated, auth.checkAdminPermission,(req,res)=>{
     querys.addStation(req.body.nev,req.body.varos).then(rows =>{
         querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows,flightLista:sork, uzi:"Station added succsessfully!"})))
     })
 })
-app.post("/addTicket",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
+app.post("/addTicket", auth.checkAuthenticated, auth.checkAdminPermission,(req,res)=>{
     querys.addTicket(req.body.ar,req.body.jaratazon,req.body.elerheto).then(rows =>{
         querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows, flightLista:sork, uzi:"Ticket added succsessfully!"})))
     })
 })
-app.post("/removeFlight:azonosito",auth.checkAuthenticated,auth.checkAdminPermission,(req,res)=>{
-    querys.removeFlight(req.params.azonosito).then(rows=>querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
-        res.render("loggedInListing.ejs",{lista:rows,szerep:req.user.szerep,ticketbuyview:"no"})
-    }))
+app.post("/removeFlight", auth.checkAuthenticated, auth.checkAdminPermission,(req,res)=>{
+    querys.removeFlight(req.body.removable).then(rows =>{
+        querys.listStation().then(rows=>querys.listFlight().then(sork =>res.render("flightModerate.ejs",{szerep: req.user.szerep, lista: rows,flightLista:sork, uzi:"Flight removed succsessfully!"})))
+    })
 })
 
 
@@ -183,16 +183,13 @@ app.get("/register", auth.checkNotAuthenticated, (req,res)=>{
     res.render("register.ejs")
 })
 app.get("/userprof", auth.checkAuthenticated ,(req,res)=>{
-    res.render("userprof.ejs",{nev: req.user.nev +", you logged in", szerep: req.user.szerep, lista: ""})
-})
-app.get("/admin", auth.checkAuthenticated,auth.checkAdminPermission ,(req,res)=>{
-    res.render("userprof.ejs",{nev: req.user.nev, szerep: req.user.szerep, lista: listas})
+    res.render("userprof.ejs",{nev: req.user.nev +", you logged in",email: req.user.email, szerep: req.user.szerep, lista: ""})
 })
 app.get("/tickets", auth.checkAuthenticated ,(req,res)=>{
-    querys.tickets(req.user.id).then(rows=>res.render("mytickets.ejs",{ szerep: req.user.szerep, lista: rows}))
+    querys.ticketsOfUser(req.user.id).then(rows=>res.render("mytickets.ejs",{ szerep: req.user.szerep, lista: rows}))
 })
 app.get("/flightList", auth.checkAuthenticated ,(req,res)=>{
-    res.render("loggedInListing",{nev: req.user.nev +", you logged in", szerep: req.user.szerep, lista: [],ticketbuyview:"no"})
+    res.render("loggedInListing.ejs",{lista:[],szerep:req.user.szerep,ticketbuyview:"no"})
 })
 app.get("/users", auth.checkAuthenticated, auth.checkAdminPermission ,(req,res)=>{
     userList().then(rows=>{
