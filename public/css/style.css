@@ -84,13 +84,40 @@ button:not(#logout){
 }
 
 .listing-wrapper{
-    margin: 10px 70px 70px;
     text-align: center;
 }
 
 .table-wrapper{
     margin: 10px;
     box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+}
+
+#otherList {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    border: orangered 2pt solid;
+    border-collapse: collapse;
+    margin-bottom: 30pt;
+
+}
+#otherList thead th {
+    color: #ffffff;
+    background: black;
+    font-weight: bold;
+    font-size: 13pt;
+    border-right: 2pt solid orangered;
+}
+#otherList td {
+    border-right: 2pt solid orangered;
+    font-size: 12pt;
+}
+
+#otherList tr:nth-child(even) {
+    background: #36454F;
+}
+#otherList tr:nth-child(odd) {
+    background: #2C3539;
 }
 
 #List {
@@ -137,7 +164,11 @@ input{
 h1,h2,label,form{
     text-align: center;
 }
-
+hr{
+    height: 1px;
+    background-color: black;
+    border: none;
+}
 
 
 

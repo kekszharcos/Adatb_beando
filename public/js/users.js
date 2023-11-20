@@ -12,7 +12,15 @@ async function loginUsers(){
 
 }
 loginUsers().then(rows =>users=rows)
-    .catch(err => console.log(err))
+
+async function updateUsersData(){
+    try {
+        loginUsers().then(rows =>users=rows)
+    }catch (err){
+        console.log(err)
+    }
+
+}
 
 async function addUser(user) {
     // Felhasználó hozzáadása a tömbhöz
@@ -21,7 +29,6 @@ async function addUser(user) {
         let [rows] = await pool.execute(sql,[user.id,user.nev,user.email,user.jelszo,user.szerep])
         loginUsers().then(rows =>users=rows)
             .catch(err => console.log(err))
-            .then(r => console.log(users))
     }catch (err){
         console.log(err)
     }
@@ -71,5 +78,6 @@ module.exports = {
     findByEmail,
     findById,
     findByName,
-    isEmailOccupied
+    isEmailOccupied,
+    updateUsersData
 };

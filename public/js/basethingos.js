@@ -2,10 +2,24 @@ const pool = require("../config/database.js")
 
 async function listing(from,to,bus,train,airplane) {
     try {
-        let madeFilterFrom = from+"%"
-        let madeFilterTo = to+"%"
+        let madeFilterFrom
+        let madeFilterTo
+        if (from){
+            madeFilterFrom = from+"%"
+        }else {
+            madeFilterFrom ="%"
+        }
+        if (to){
+            madeFilterTo = to+"%"
+        }else {
+            madeFilterTo = "%"
+        }
+
         let checkbox = "%"
-        if (bus === "on" && train === "on"){
+        if (bus === "on" && train === "on" && airplane === "on") {
+            let [rows] = await pool.execute('SELECT jarat.azonosito, jaratazonosito, jegy.azonosito as jegyazon, datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, jegy.ar, jegy.elerheto_db FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito WHERE celallomas.nev LIKE ? AND induloallomas.nev LIKE ? AND tipus LIKE ?', [madeFilterTo, madeFilterFrom, checkbox])
+            return rows
+        }else if (bus === "on" && train === "on"){
             let [rows] = await pool.execute('SELECT jarat.azonosito, jaratazonosito, jegy.azonosito as jegyazon, datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, jegy.ar, jegy.elerheto_db FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito WHERE celallomas.nev LIKE ? AND induloallomas.nev LIKE ? AND tipus LIKE ? OR tipus LIKE ?',[madeFilterTo,madeFilterFrom,"bus","train"])
             return rows
         }else if (airplane === "on" && train === "on"){
@@ -14,10 +28,7 @@ async function listing(from,to,bus,train,airplane) {
         }else if (bus === "on" && airplane === "on"){
             let [rows] = await pool.execute('SELECT jarat.azonosito, jaratazonosito, jegy.azonosito as jegyazon, datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, jegy.ar, jegy.elerheto_db FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito WHERE celallomas.nev LIKE ? AND induloallomas.nev LIKE ? AND tipus LIKE ? OR tipus LIKE ?',[madeFilterTo,madeFilterFrom,"bus","airplane"])
             return rows
-        }else if (bus === "on" && train === "on" && airplane === "on") {
-            let [rows] = await pool.execute('SELECT jarat.azonosito, jaratazonosito, jegy.azonosito as jegyazon, datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, jegy.ar, jegy.elerheto_db FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito WHERE celallomas.nev LIKE ? AND induloallomas.nev LIKE ? AND tipus LIKE ?',[madeFilterTo,madeFilterFrom,checkbox])
-            return rows
-        } else {
+        }else {
             if (bus === "on"){
                 checkbox = "bus"
             }else
@@ -97,7 +108,7 @@ async function jaratGet(id){
 
 async function jaratTicketGet(jaratazon,jegyazon){
     try {
-        let [rows] = await pool.execute('SELECT jaratazonosito, jegy.azonosito as jegyazon, datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, jegy.ar, jegy.elerheto_db FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito WHERE jarat.azonosito = ? and jegy.azonosito = ?',[jaratazon,jegyazon])
+        let [rows] = await pool.execute('SELECT jaratazonosito, jegy.azonosito as jegyazon, datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, jegy.ar, jegy.elerheto_db FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito WHERE jarat.azonosito IN (SELECT jaratazonosito FROM jegy WHERE jaratazonosito = ?) AND jegy.azonosito = ?',[jaratazon,jegyazon])
         return rows
     }catch (err){
         console.log(err)
@@ -192,7 +203,8 @@ async function addTicket(ar,jaratazon,elerheto_db) {
 
 async function bestSellingTicketToRide() {
     try {
-        await pool.execute('')
+        let [rows] = await pool.execute('SELECT datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan,tipus, SUM(db) AS eladott FROM jarat INNER JOIN allomas as celallomas on celallomas.azonosito = celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon INNER JOIN jegy ON jegy.jaratazonosito = jarat.azonosito INNER JOIN felhasznalo_jegyek ON jegy.azonosito = jegyazonosito GROUP BY jarat.azonosito ORDER BY eladott DESC LIMIT 5')
+        return rows
     } catch (err) {
         console.log(err)
     }
@@ -223,5 +235,6 @@ module.exports ={
     addFlight,
     addStation,
     addTicket,
-    jaratTicketGet
+    jaratTicketGet,
+    bestSellingTicketToRide
 }

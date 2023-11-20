@@ -25,6 +25,38 @@
 </header>
 
 <%if (ticketbuyview === "no"){%>
+<%if(typeof sork !== 'undefined'){%>
+    <h2>Best-selling tickets</h2>
+    <table id="otherList">
+        <thead>
+        <tr>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Vehicle</th>
+            <th>Tickets sold</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <% sork.forEach(sor=>{
+            splitter = new Date(sor.datum).toISOString().split("T")%>
+
+        <tr>
+            <td><%= sor.honnan %></td>
+            <td><%= sor.hova %></td>
+            <td><%= splitter[0] %></td>
+            <td><%= sor.idopont %></td>
+            <td><%= sor.tipus %></td>
+            <td><%= sor.eladott %></td>
+        </tr>
+        <%})%>
+        </tbody>
+    </table>
+<%}%>
+<hr>
+<h2>Where do you want to go?</h2>
     <div class="listing-wrapper">
         <form action="/flightlisting" method="post" class="middle">
             <label>
@@ -82,6 +114,9 @@
             </tbody>
         </table>
     </div>
+<%if (typeof uzi !== 'undefined'){%>
+    <div class="error-message"><%= uzi%></div>
+<%}%>
 <%}else {%>
 <h2>Are you sure you want to buy <%=szam%> ticket/s to this flight?</h2>
 <div class="table-wrapper">

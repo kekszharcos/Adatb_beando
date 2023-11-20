@@ -10,6 +10,38 @@
 </head>
 <body>
 <%- include('header') %>
+<%if(typeof sork !== 'undefined'){%>
+    <h2 class="error-message">Best-selling tickets</h2>
+    <table id="otherList">
+        <thead>
+        <tr>
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Vehicle</th>
+            <th>Tickets sold</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <% sork.forEach(sor=>{
+            splitter = new Date(sor.datum).toISOString().split("T")%>
+
+        <tr>
+            <td><%= sor.honnan %></td>
+            <td><%= sor.hova %></td>
+            <td><%= splitter[0] %></td>
+            <td><%= sor.idopont %></td>
+            <td><%= sor.tipus %></td>
+            <td><%= sor.eladott %></td>
+        </tr>
+        <%})%>
+        </tbody>
+    </table>
+        <%}%>
+<hr>
+<h2>Where do you want to go?</h2>
 <div class="listing-wrapper">
     <form action="/listing" method="post" class="middle">
         <label>
@@ -24,7 +56,6 @@
         <button type="submit">Click to Search or press enter</button>
     </form>
 </div>
-
 
 <div class="table-wrapper">
     <table id="List">
@@ -57,6 +88,9 @@
         </tbody>
     </table>
 </div>
+<%if (typeof uzi !== 'undefined'){%>
+    <div class="error-message"><%= uzi%></div>
+<%}%>
 
 
 <%- include('footer') %>

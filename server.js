@@ -15,7 +15,7 @@ const validator = require("email-validator");
 const auth = require('./public/js/auth');
 const users = require('./public/js/users');
 const querys = require("./public/js/basethingos");
-const {userList, ticketsOf} = require("./public/js/basethingos");
+const {userList} = require("./public/js/basethingos");
 
 // Egyéb modulok importálása...
 
@@ -87,14 +87,27 @@ app.post("/register",auth.checkNotAuthenticated ,async (req,res,done)=>{
 let listas = []
 
 app.post("/listing",auth.checkNotAuthenticated, (req, res) => {
-    querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>res.render("index",{lista:rows}))
+    querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
+
+        if (rows.length === 0){
+            querys.bestSellingTicketToRide().then(sork =>res.render("index",{lista:rows,sork, uzi:"No flight found"}))
+        }else {
+            querys.bestSellingTicketToRide().then(sork =>res.render("index",{lista:rows,sork}))
+        }
+
+    })
 });
 
 app.post("/flightlisting", auth.checkAuthenticated, (req,res)=>{
     querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
-        res.render("loggedInListing.ejs",{lista:rows,szerep:req.user.szerep,ticketbuyview:"no"})
-    })
+        console.log(rows)
+        if (rows.length === 0){
+            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no", uzi:"No flight found"}))
+        }else{
+            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no"}))
+        }
 
+    })
 })
 
 app.post("/ticketBuy:id",auth.checkAuthenticated,(req,res)=>{
@@ -134,14 +147,16 @@ app.post("/addFlight", auth.checkAuthenticated, auth.checkAdminPermission,(req,r
     let jodatum
     if (req.body.datum === ''){
         jodatum = "0001-01-01"
+        datum = jodatum.split("-")
     }else if (parseInt(datum[0]) > 9999){
         jodatum = "9999"
         jodatum+="-"+datum[1]+"-"+datum[2]
-    }else if (parseInt(datum[0]) < 2023){
-        jodatum = "2023"
-        jodatum+="-"+datum[1]+"-"+datum[2]
     }else {
         jodatum = req.body.datum
+    }
+    if (parseInt(datum[0]) < 2023){
+        jodatum = "2023"
+        jodatum+="-"+datum[1]+"-"+datum[2]
     }
 
     querys.addFlight(jodatum,req.body.idopont,req.body.tipus,req.body.source,req.body.destination).then(rows =>{
@@ -169,15 +184,15 @@ app.post("/removeFlight", auth.checkAuthenticated, auth.checkAdminPermission,(re
 //Útvonal
 
 app.get("/",auth.checkNotAuthenticated, (req, res)=>{
-    if (req.isAuthenticated){
-        res.render("index.ejs",{lista:listas,authenticated:"y"})
-    }else{
-        res.render("index.ejs",{lista:listas})
-    }
-
+    ////werewrwerw
+    querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
+        querys.bestSellingTicketToRide().then(sork =>res.render("index.ejs",{lista:rows,sork}))
+    });
 })
 app.get("/login", auth.checkNotAuthenticated,(req,res)=>{
-    res.render("login.ejs",{success:""})
+    users.updateUsersData().then(r => {
+        res.render("login.ejs", {success: ""})
+    })
 })
 app.get("/register", auth.checkNotAuthenticated, (req,res)=>{
     res.render("register.ejs")
@@ -189,7 +204,16 @@ app.get("/tickets", auth.checkAuthenticated ,(req,res)=>{
     querys.ticketsOfUser(req.user.id).then(rows=>res.render("mytickets.ejs",{ szerep: req.user.szerep, lista: rows}))
 })
 app.get("/flightList", auth.checkAuthenticated ,(req,res)=>{
-    res.render("loggedInListing.ejs",{lista:[],szerep:req.user.szerep,ticketbuyview:"no"})
+    //////erterter
+    querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
+
+        if (rows.length === 0){
+            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no", uzi:"No flight found"}))
+        }else {
+            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no"}))
+        }
+
+    })
 })
 app.get("/users", auth.checkAuthenticated, auth.checkAdminPermission ,(req,res)=>{
     userList().then(rows=>{
