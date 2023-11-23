@@ -60,8 +60,6 @@ async function ticketBuy(felhasznid){
 
 async function ticketsOfUser(felhasznid){
     try {
-        //amiCsakKellösszevonással
-        //SELECT datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, (jegy.ar*SUM(db)) as ar,SUM(db) as db  FROM felhasznalo_jegyek INNER join jegy on jegyazonosito = jegy.azonosito inner join jarat on jarat.azonosito = jegy.jaratazonosito INNER JOIN allomas as celallomas on celallomas.azonosito = jarat.celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon  WHERE felhasznaloazonosito = 1698782681496 GROUP BY jegyazonosito;
         let [rows] = await pool.execute('SELECT datum, idopont, celallomas.nev as hova, induloallomas.nev as honnan, tipus, SUM(db) as db  FROM felhasznalo_jegyek INNER join jegy on jegyazonosito = jegy.azonosito inner join jarat on jarat.azonosito = jegy.jaratazonosito INNER JOIN allomas as celallomas on celallomas.azonosito = jarat.celallomasazon INNER JOIN allomas as induloallomas ON induloallomas.azonosito = jarat.induloallomasazon  WHERE felhasznaloazonosito = ? GROUP BY jegyazonosito ',[felhasznid])
         return rows
     }catch (err){
@@ -147,7 +145,7 @@ async function removeFlight(azon) {
 
 async function addStation(nev,varos) {
     try {
-        await pool.execute('INSERT INTO allomas (`azonosito`,nev,varos) VALUES (NULL, ?, ?)',[nev,varos])
+        await pool.execute('INSERT INTO allomas (`azonosito`,nev,varos) VALUES (NULL, ?, ?)',[nev.trim(),varos.trim()])
     } catch (err) {
         console.log(err)
     }
@@ -165,7 +163,7 @@ async function removeStation(nev,varos) {
 
 async function addFlight(datum,idopont,tipus,iallomaz,callomaz) {
     try {
-        await pool.execute('INSERT INTO jarat(`azonosito`,datum,idopont,tipus,induloallomasazon,celallomasazon) VALUES (NULL, ?, ?, ?, ?, ?)',[datum,idopont,tipus,iallomaz,callomaz])
+        await pool.execute('INSERT INTO jarat(`azonosito`,datum,idopont,tipus,induloallomasazon,celallomasazon) VALUES (NULL, ?, ?, ?, ?, ?)',[datum.trim(),idopont,tipus.trim(),iallomaz.trim(),callomaz.trim()])
     } catch (err) {
         console.log(err)
     }
@@ -194,7 +192,7 @@ async function listStation() {
 
 async function addTicket(ar,jaratazon,elerheto_db) {
     try {
-        await pool.execute('INSERT INTO jegy(`azonosito`,ar,jaratazonosito,elerheto_db) VALUES (NULL, ?, ?, ?)',[ar,jaratazon,elerheto_db])
+        await pool.execute('INSERT INTO jegy(azonosito,ar,jaratazonosito,elerheto_db) VALUES (NULL, ?, ?, ?)',[ar.trim(),jaratazon,elerheto_db])
     } catch (err) {
         console.log(err)
     }

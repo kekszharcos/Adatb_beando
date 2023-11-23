@@ -13,10 +13,10 @@
     <nav>
         <a href="/userprof">User Things</a>
         <a href="/tickets">Tickets</a>
-        <a href="/flightList">Flights</a>
+        <a href="/publicTransportList">Public transport</a>
         <%if (szerep === "admin"){%>
             <a href="/users">Users</a>
-            <a href="/flightModerate">Moderate Flights</a>
+            <a href="/flightModerate">Modify schedule</a>
         <%}%>
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>

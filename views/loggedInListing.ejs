@@ -13,10 +13,10 @@
     <nav>
         <a href="/userprof">User Things</a>
         <a href="/tickets">Tickets</a>
-        <a href="/flightList">Flights</a>
+        <a href="/publicTransportList">Public transport</a>
         <%if (szerep === "admin"){%>
             <a href="/users">Users</a>
-            <a href="/flightModerate">Moderate Flights</a>
+            <a href="/flightModerate">Modify schedules</a>
         <%}%>
         <form action="/logout?_method=DELETE" method="post">
             <button type="submit" aria-current="page" id="logout">LogOut</button>
@@ -77,6 +77,7 @@
             <tr>
                 <th>Source</th>
                 <th>Destination</th>
+                <th>Stations between</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Vehicle</th>
@@ -92,6 +93,7 @@
             <tr>
                 <td><%= sor.honnan %></td>
                 <td><%= sor.hova %></td>
+                <td><%= sor.honnan %>, <%= sor.hova %></td>
                 <td><%= splitter[0] %></td>
                 <td><%= sor.idopont %></td>
                 <td><%= sor.tipus %></td>
@@ -118,7 +120,7 @@
     <div class="error-message"><%= uzi%></div>
 <%}%>
 <%}else {%>
-<h2>Are you sure you want to buy <%=szam%> ticket/s to this flight?</h2>
+<h2>Are you sure you want to buy <%=szam%> ticket/s to this service?</h2>
 <div class="table-wrapper">
     <table id="List">
         <thead>

@@ -26,7 +26,7 @@ async function addUser(user) {
     // Felhasználó hozzáadása a tömbhöz
     try {
         let sql = 'INSERT INTO `felhasznalo` (`id`, `nev`, `email`, `jelszo`, `szerep`) VALUES (?, ?, ?, ?, ?)'
-        let [rows] = await pool.execute(sql,[user.id,user.nev,user.email,user.jelszo,user.szerep])
+        let [rows] = await pool.execute(sql,[user.id,user.nev.trim(),user.email.trim(),user.jelszo,user.szerep])
         loginUsers().then(rows =>users=rows)
             .catch(err => console.log(err))
     }catch (err){
@@ -35,7 +35,7 @@ async function addUser(user) {
 
 }
 
-async function findByEmailP(email) {
+async function findByEmail(email) {
     // Felhasználó keresése az email alapján
     try {
         let sql = 'SELECT * FROM felhasznalo where email = ?'
@@ -45,13 +45,13 @@ async function findByEmailP(email) {
         console.log(err)
     }
 }
-function findByEmail(email) {
+function findByEmailP(email) {
     // Felhasználó keresése az email alapján
     return users.find(user => user.email === email);
 }
 
 function findByName(nev) {
-    // Felhasználó keresése az email alapján
+    // Felhasználó keresése a név alapján
     return users.find(user => user.nev === nev);
 }
 

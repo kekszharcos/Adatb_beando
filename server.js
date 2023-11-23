@@ -74,6 +74,8 @@ app.post("/register",auth.checkNotAuthenticated ,async (req,res,done)=>{
             res.render("register.ejs",{uzi:uzi})
         }else if (users.findByName(req.body.username)){
             res.render("register",{uzi:"Username already in use!"})
+        }else if (!validator.validate(req.body.email)) {
+            res.render("register",{uzi:"Bad email address format(do not use Diacritic characters)"})
         }else {
             res.render("register",{uzi:"Fill it out!"})
         }
@@ -90,7 +92,7 @@ app.post("/listing",auth.checkNotAuthenticated, (req, res) => {
     querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
 
         if (rows.length === 0){
-            querys.bestSellingTicketToRide().then(sork =>res.render("index",{lista:rows,sork, uzi:"No flight found"}))
+            querys.bestSellingTicketToRide().then(sork =>res.render("index",{lista:rows,sork, uzi:"No public transport found"}))
         }else {
             querys.bestSellingTicketToRide().then(sork =>res.render("index",{lista:rows,sork}))
         }
@@ -100,9 +102,8 @@ app.post("/listing",auth.checkNotAuthenticated, (req, res) => {
 
 app.post("/flightlisting", auth.checkAuthenticated, (req,res)=>{
     querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
-        console.log(rows)
         if (rows.length === 0){
-            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no", uzi:"No flight found"}))
+            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no", uzi:"No public transport found"}))
         }else{
             querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no"}))
         }
@@ -203,12 +204,12 @@ app.get("/userprof", auth.checkAuthenticated ,(req,res)=>{
 app.get("/tickets", auth.checkAuthenticated ,(req,res)=>{
     querys.ticketsOfUser(req.user.id).then(rows=>res.render("mytickets.ejs",{ szerep: req.user.szerep, lista: rows}))
 })
-app.get("/flightList", auth.checkAuthenticated ,(req,res)=>{
+app.get("/publicTransportList", auth.checkAuthenticated ,(req, res)=>{
     //////erterter
     querys.listing(req.body.from,req.body.to,req.body.bus,req.body.train,req.body.airplane).then(rows =>{
 
         if (rows.length === 0){
-            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no", uzi:"No flight found"}))
+            querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no", uzi:"No public transport found"}))
         }else {
             querys.bestSellingTicketToRide().then(sork =>res.render("loggedInListing.ejs",{lista:rows, sork, szerep:req.user.szerep,ticketbuyview:"no"}))
         }
