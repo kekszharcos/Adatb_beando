@@ -35,7 +35,7 @@ async function addUser(user) {
 
 }
 
-async function findByEmail(email) {
+async function findByEmailP(email) {
     // Felhasználó keresése az email alapján
     try {
         let sql = 'SELECT * FROM felhasznalo where email = ?'
@@ -45,7 +45,7 @@ async function findByEmail(email) {
         console.log(err)
     }
 }
-function findByEmailP(email) {
+function findByEmail(email) {
     // Felhasználó keresése az email alapján
     return users.find(user => user.email === email);
 }
